@@ -21,11 +21,11 @@
           </div>
 
           <ul class="flex space-x-4 p-2 items-center bg-white border-y border-r w-fit shadow-md">
-            <li><a href="#Hero" class="p-2 hover:underline">Inicio</a></li>
-            <li><a href="#Features" class="p-2 hover:underline">¿Quienes somos?</a></li>
-            <li><a href="#Issue" class="p-2 hover:underline">Problema Actual</a></li>
-            <li><a href="#Solution" class="p-2 hover:underline">Soluciones</a></li>
-            <li><a href="#Plan" class="p-2 hover:underline">Plan</a></li>
+            <li><button data-target-id="Hero" class="p-2 hover:underline">Inicio</button></li>
+            <li><button data-target-id="Features" class="p-2 hover:underline">¿Quienes somos?</button></li>
+            <li><button data-target-id="Issue" class="p-2 hover:underline">Problema Actual</button></li>
+            <li><button data-target-id="Solution" class="p-2 hover:underline">Soluciones</button></li>
+            <li><button data-target-id="Plan" class="p-2 hover:underline">Plan</button></li>
           </ul>
         </div>
 
@@ -74,11 +74,11 @@
   <!-- Mobile Menu, hidden by default -->
   <div class="hidden lg:hidden" id="mobile-menu">
     <div class="mx-4 mt-2 p-4 space-y-2 bg-white shadow-lg rounded-lg border">
-      <a href="#Hero" class="nav-link-mobile">Inicio</a>
-      <a href="#Features" class="nav-link-mobile">¿Quienes somos?</a>
-      <a href="#Issue" class="nav-link-mobile">Problema Actual</a>
-      <a href="#Solution" class="nav-link-mobile">Soluciones</a>
-      <a href="#Plan" class="nav-link-mobile">Plan</a>
+      <button data-target-id="Hero" class="nav-link-mobile text-left w-full">Inicio</button>
+      <button data-target-id="Features" class="nav-link-mobile text-left w-full">¿Quienes somos?</button>
+      <button data-target-id="Issue" class="nav-link-mobile text-left w-full">Problema Actual</button>
+      <button data-target-id="Solution" class="nav-link-mobile text-left w-full">Soluciones</button>
+      <button data-target-id="Plan" class="nav-link-mobile text-left w-full">Plan</button>
 
       <div class="border-t border-gray-200 !mt-4 pt-4">
         <div class="flex items-center justify-center space-x-6">
@@ -113,23 +113,34 @@
   const mobileMenu = document.getElementById('mobile-menu');
   const iconOpen = document.getElementById('icon-open');
   const iconClose = document.getElementById('icon-close');
-  const navLinks = mobileMenu.querySelectorAll('a');
 
   function toggleMenu() {
     const isExpanded = menuButton.getAttribute('aria-expanded') === 'true';
-    menuButton.setAttribute('aria-expanded', !isExpanded);
+    menuButton.setAttribute('aria-expanded', String(!isExpanded));
     mobileMenu.classList.toggle('hidden');
     iconOpen.classList.toggle('hidden');
     iconClose.classList.toggle('hidden');
   }
 
-  menuButton.addEventListener('click', toggleMenu);
+  if (menuButton) {
+    menuButton.addEventListener('click', toggleMenu);
+  }
 
-  // Close menu when a link is clicked
-  navLinks.forEach(link => {
-    link.addEventListener('click', () => {
-      if (menuButton.getAttribute('aria-expanded') === 'true') {
-        toggleMenu();
+  // --- Smooth scroll & mobile menu close logic ---
+  const scrollButtons = document.querySelectorAll('button[data-target-id]');
+
+  scrollButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const targetId = button.dataset.targetId;
+      const targetElement = document.getElementById(targetId);
+
+      if (targetElement) {
+        targetElement.scrollIntoView({ behavior: 'smooth' });
+      }
+
+      // Close mobile menu if it's open and a mobile link was clicked
+      if (mobileMenu && !mobileMenu.classList.contains('hidden') && button.classList.contains('nav-link-mobile')) {
+          toggleMenu();
       }
     });
   });
